@@ -1,5 +1,10 @@
 Posts = new Meteor.Collection('posts');
 
+Posts.allow({
+	update: function() { return true; }, //ownsDocument,
+	remove: function() { return true; } //ownsDocument
+});
+
 Meteor.methods({
 	add: function(postAttributes) {
 		var	user = Meteor.user(),
@@ -21,13 +26,13 @@ Meteor.methods({
 		}
 
 		// pick out the whitelisted keys
-		var post = _.extend(_.pick(postAttributes, 'url', 'title', 'message'), { 
+		var post = _.extend(_.pick(postAttributes, 'url', 'message'), { 
+			title: postAttributes.title + (this.isSimulation ? '(client)' : '(server)'),
 			userId: user._id,
 			author: user.username,
 			submitted: new Date().getTime()
 		});
 
-		var postId = Posts.insert(post);
-		return postId; 
+		return Posts.insert(post);
 	}
 });
