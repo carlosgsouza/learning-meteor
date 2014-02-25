@@ -11,9 +11,14 @@ Template.postSubmit.events({
 
     Meteor.call('add', post, function(error, id) { 
       if (error) {
-        return alert(error.reason);
+        throwError(error.reason);
+
+        if(error.error === 302) {
+          Meteor.Router.to('postPage', error.details);
+        }
+      } else {
+        Meteor.Router.to('postPage', id); 
       }
-      Meteor.Router.to('postPage', id); 
     });
   }
 });
