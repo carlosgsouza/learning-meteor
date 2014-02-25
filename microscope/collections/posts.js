@@ -38,9 +38,32 @@ Meteor.methods({
 			userId: user._id,
 			author: user.username,
 			submitted: new Date().getTime(),
-			commentsCount: 0
+			commentsCount: 0,
+    		upvoters: [],
+    		votes: 0
 		});
 
 		return Posts.insert(post);
+	},
+	upvote: function(postId) {
+		var post = Posts.findOne(postId);
+		var user = Meteor.user();
+
+		if(!postId || !post) {
+			throw new Meteor.Error(400, "Invalid postId (" + postId + ")");
+		}
+
+		if(!user) {
+			throw new Meteor.Error(401, "You need to login to vote");
+		}
+
+		if(_.include(post.upvoters, user._id)) {
+			throw new Meteor.Error(422, "You already voted for this post");
+		}
+
+		Posts.update(postId, {
+			$inc: {votes: 1},
+			$addToSet: {upvoters: user._id}
+		});
 	}
 });
