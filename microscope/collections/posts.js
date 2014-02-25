@@ -46,10 +46,9 @@ Meteor.methods({
 		return Posts.insert(post);
 	},
 	upvote: function(postId) {
-		var post = Posts.findOne(postId);
 		var user = Meteor.user();
 
-		if(!postId || !post) {
+		if(!postId) {
 			throw new Meteor.Error(400, "Invalid postId (" + postId + ")");
 		}
 
@@ -57,11 +56,10 @@ Meteor.methods({
 			throw new Meteor.Error(401, "You need to login to vote");
 		}
 
-		if(_.include(post.upvoters, user._id)) {
-			throw new Meteor.Error(422, "You already voted for this post");
-		}
-
-		Posts.update(postId, {
+		Posts.update({
+			_id: postId,
+			upvoters: {$ne: user._id}
+		}, {
 			$inc: {votes: 1},
 			$addToSet: {upvoters: user._id}
 		});
