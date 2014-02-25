@@ -1,0 +1,26 @@
+<template name="header">
+  <header class="navbar">
+    <div class="navbar-inner">
+		<a class="brand" href="{{homePath}}}">Microscope</a>
+		<ul class="nav">
+			<li class="{{activeRouteClass 'home' 'newPosts'}}"> 
+				<a href="{{newPostsPath}}">New</a>
+			</li>
+			<li class="{{activeRouteClass 'topPosts'}}">
+				<a href="{{topPostsPath}}">Top</a> 
+			</li>
+			{{#if currentUser}}
+				<li class="{{activeRouteClass 'postSubmit'}}">
+					<a href="{{ postSubmitPath }}">Create</a>
+				</li>
+			{{/if}}
+			<li class="dropdown">
+				{{> notifications}}
+			</li>
+		</ul>
+		<ul class="nav pull-right">
+			<li>{{ loginButtons align="right" }}</li>
+		</ul>
+    </div>
+  </header>
+</template>
