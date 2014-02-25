@@ -1,3 +1,11 @@
+<template name="topPosts">
+	{{>postsList options}}
+</template>
+
+<template name="newPosts">
+	{{>postsList options}}
+</template>
+
 <template name="postsList">
   <div class="posts">
     {{#each posts}}
